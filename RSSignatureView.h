@@ -8,6 +8,4 @@
 @interface RSSignatureView : RCTView
 @property (nonatomic, strong) PPSSignatureView *sign;
 @property (nonatomic, strong) RSSignatureViewManager *manager;
--(void) onSaveButtonPressed;
--(void) onClearButtonPressed;
 @end

@@ -65,6 +65,7 @@ var styles = {
     position: 'absolute',
     height: Dimensions.get('window').height,
     width: Dimensions.get('window').width,
+    backgroundColor: 'grey'
   }
 }
 
@@ -121,10 +122,10 @@ Use the `register` prop to register the signature view node for future use.
 
 ## Props
 
-1. @Optional - `register` - `Function` - Will be called with the node reference that can then
+1. **`register`** - `Function` - Will be called with the node reference that can then
 be used to call the static methods, `clearSignature`, and `saveSignature`.
 
-2. @Optional - `onImageSaved` - `Function` - Will be called any time an image is saved.
+2. **`onImageSaved`** - `Function` - Will be called any time an image is saved.
 Will be passed image data:
 
 ```json
@@ -133,8 +134,6 @@ Will be passed image data:
   "pathName": "for the file path name"
 }
 ```
-
-3. @Optional - `drawStyles` - `Object` - Styles to be applied to the base `Signature` component
 
 ## Static Manager Methods
 

@@ -33,10 +33,9 @@ export default class Signature extends React.Component {
 
   render () {
     const register = this.props.register || function(){};
-    const styles = this.props.drawStyles || { flex: 1 };
 
     return (
-      <Component ref={register} style={styles} />
+      <Component ref={register} style={{ flex: 1}}/>
     );
   }
 }

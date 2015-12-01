@@ -1,15 +1,16 @@
 #import "RSSignatureViewManager.h"
 #import "RCTBridgeModule.h"
 #import "RCTBridge.h"
+#import "RCTUIManager.h"
 #import "RCTEventDispatcher.h"
+#import "RCTSparseArray.h"
 
-@implementation RSSignatureViewManager {
-}
+@implementation RSSignatureViewManager
+
+RCT_EXPORT_MODULE()
 
 @synthesize bridge = _bridge;
 @synthesize signView;
-
-RCT_EXPORT_MODULE()
 
 -(UIView *) view
 {
@@ -20,20 +21,32 @@ RCT_EXPORT_MODULE()
 
 - (dispatch_queue_t)methodQueue
 {
-  return dispatch_get_main_queue();
+  return _bridge.uiManager.methodQueue;
 }
 
--(void) saveImage:(NSString *) aTempPath withEncoded: (NSString *) aEncoded {
+RCT_EXPORT_METHOD(clearSignature:(nonnull NSNumber *)reactTag)
+{
+  [_bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
+      RSSignatureView *view = viewRegistry[reactTag];
+      [view clearSignature];
+  }];
+}
+
+RCT_EXPORT_METHOD(saveSignature:(nonnull NSNumber *)reactTag)
+{
+  [_bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
+      RSSignatureView *view = viewRegistry[reactTag];
+      [view saveSignature];
+  }];
+}
+
+-(void) dispatchSavedImage:(NSString *) aTempPath withEncoded: (NSString *) aEncoded {
   [self.bridge.eventDispatcher
-   sendDeviceEventWithName:@"onSaveEvent"
+   sendDeviceEventWithName:@"imageSaved"
    body:@{
           @"pathName": aTempPath,
           @"encoded": aEncoded
           }];
-}
-
--(void) cancelSignature {
-  [self.bridge.eventDispatcher sendDeviceEventWithName:@"cancelSignature" body:nil];
 }
 
 @end

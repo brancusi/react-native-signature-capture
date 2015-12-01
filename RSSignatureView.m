@@ -14,6 +14,8 @@
   UILabel *titleLabel;
 }
 
+RCT_EXPORT_MODULE();
+
 @synthesize sign;
 @synthesize manager;
 
@@ -34,12 +36,14 @@
     self.sign = [[PPSSignatureView alloc]
                  initWithFrame: CGRectMake(0, 0, screen.width, screen.height)
                  context: _context];
+
+    [self addSubview:sign];
   }
-  
+
   _loaded = true;
 }
 
-RCT_EXPORT_METHOD(save)
+-(void) saveSignature
 {
   UIImage *signImage = [self.sign signatureImage];
   UIImage *signImageRotated = [self imageRotatedByDegrees:signImage deg:-90];
@@ -63,16 +67,11 @@ RCT_EXPORT_METHOD(save)
   BOOL isSuccess = [imageData writeToFile:tempPath atomically:YES];
   if (isSuccess) {
     NSString *base64Encoded = [imageData base64EncodedStringWithOptions:0];
-    [self.manager saveImage: tempPath withEncoded:base64Encoded];
+    [self.manager dispatchSavedImage: tempPath withEncoded:base64Encoded];
   }
 }
 
-RCT_EXPORT_METHOD(cancel)
-{
-  [self.manager cancelSignature];
-}
-
-RCT_EXPORT_METHOD(clear)
+-(void) clearSignature
 {
   [self.sign erase];
 }

@@ -1,45 +1,42 @@
 'use strict';
 
-var React = require('react-native');
+import React from 'react-native';
 
-var {
+const {
   requireNativeComponent,
-  DeviceEventEmitter,
-  View
+  NativeModules,
+  DeviceEventEmitter
 } = React;
 
-var Component = requireNativeComponent('RSSignatureView', null);
+const Component = requireNativeComponent('RSSignatureView', null);
 
-var styles = {
-  signatureBox: {
-    flex: 1
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    backgroundColor: '#F5FCFF',
-  }
-};
-
-module.exports = React.createClass({
-  propTypes: {
+export default class Signature extends React.Component {
+  static propTypes = {
     pitchEnabled: React.PropTypes.bool
-  },
+  };
 
-  componentDidMount: function() {
-    this.subscription = DeviceEventEmitter.addListener('onSaveEvent', this.props.onSaveEvent);
-  },
-
-  componentWillUnmount: function() {
-    this.subscription.remove();
-  },
-
-  render: function() {
-    return (
-      <View style={styles.container}>
-        <Component style={styles.signatureBox} />
-      </View>
-    )
+  static clearSignature (node) {
+    NativeModules.RSSignatureViewManager.clearSignature(React.findNodeHandle(node));
   }
-});
+
+  static saveSignature (node) {
+    NativeModules.RSSignatureViewManager.saveSignature(React.findNodeHandle(node));
+  }
+
+  componentDidMount () {
+    this.subscription = DeviceEventEmitter.addListener('imageSaved', this.props.onImageSaved);
+  }
+
+  componentWillUnmount () {
+    this.subscription.remove();
+  }
+
+  render () {
+    const register = this.props.register || function(){};
+    const styles = this.props.drawStyles || { flex: 1 };
+
+    return (
+      <Component ref={register} style={styles} />
+    );
+  }
+}
